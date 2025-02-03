@@ -1,6 +1,8 @@
 FactoryBot.define do
   factory :project do
-    name { Faker::Company.name + " Project" }
+    name { Faker::Company.name }
+    title { Faker::Company.catch_phrase }
+    description { Faker::Company.bs }
     
     trait :not_started do
       status { :not_started }
