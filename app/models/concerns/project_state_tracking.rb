@@ -2,7 +2,7 @@ module ProjectStateTracking
   extend ActiveSupport::Concern
 
   included do
-    before_validation :handle_status_change
+    before_validation :handle_status_change, if: :will_save_change_to_status?
   end
 
   def add_comment(user, content)
@@ -11,17 +11,20 @@ module ProjectStateTracking
 
   private
 
-  def track_status_change(old_status, new_status)
-    status_changes.create!(
+  def handle_status_change
+    return unless persisted?
+    
+    return add_error_and_throw_abort("can't be changed to the same status") if status == status_was
+
+    status_changes.build(
       user: Current.user,
-      old_status: old_status,
-      new_status: new_status
+      old_status: status_was,
+      new_status: status
     )
   end
 
-  def handle_status_change
-    return track_status_change(status_was, status) if status_was != status
-
-    errors.add(:status, "can't be changed to the same status")
+  def add_error_and_throw_abort(message)
+    errors.add(:status, message)
+    throw(:abort)
   end
 end 

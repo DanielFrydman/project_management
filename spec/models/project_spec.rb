@@ -40,22 +40,83 @@ RSpec.describe Project, type: :model do
     let(:project) { create(:project) }
 
     before { Current.user = user }
+    after { Current.user = nil }
 
-    it 'creates a status change when status is updated' do
-      expect {
-        project.update!(status: :in_progress)
-      }.to change(StatusChange, :count).by(1)
-
-      status_change = project.status_changes.last
-      expect(status_change.user).to eq(user)
-      expect(status_change.old_status).to eq('not_started')
-      expect(status_change.new_status).to eq('in_progress')
+    context 'when creating a new project' do
+      it 'does not create a status change' do
+        expect {
+          create(:project, status: :in_progress)
+        }.not_to change(StatusChange, :count)
+      end
     end
 
-    it 'does not create a status change when status remains the same' do
-      expect {
-        project.update!(name: 'New name')
-      }.not_to change(StatusChange, :count)
+    context 'when updating status' do
+      it 'creates a status change when status is updated' do
+        expect {
+          project.update!(status: :in_progress)
+        }.to change(StatusChange, :count).by(1)
+
+        status_change = project.status_changes.last
+        expect(status_change.user).to eq(user)
+        expect(status_change.old_status).to eq('not_started')
+        expect(status_change.new_status).to eq('in_progress')
+      end
+
+      it 'does not create a status change when update fails' do
+        expect {
+          project.update(status: project.status)
+        }.not_to change(StatusChange, :count)
+      end
+
+      it 'creates multiple status changes for multiple updates' do
+        expect {
+          project.update!(status: :in_progress)
+          project.update!(status: :on_hold)
+          project.update!(status: :completed)
+        }.to change(StatusChange, :count).by(3)
+
+        changes = project.status_changes.order(:created_at)
+        expect(changes.map(&:old_status)).to eq(['not_started', 'in_progress', 'on_hold'])
+        expect(changes.map(&:new_status)).to eq(['in_progress', 'on_hold', 'completed'])
+      end
+    end
+
+    context 'when updating other attributes' do
+      it 'does not create a status change when only name is updated' do
+        expect {
+          project.update!(name: 'New Name')
+        }.not_to change(StatusChange, :count)
+      end
+
+      it 'does not create a status change when only title is updated' do
+        expect {
+          project.update!(title: 'New Title')
+        }.not_to change(StatusChange, :count)
+      end
+
+      it 'does not create a status change when only description is updated' do
+        expect {
+          project.update!(description: 'New Description')
+        }.not_to change(StatusChange, :count)
+      end
+    end
+
+    context 'when Current.user is not set' do
+      before { Current.user = nil }
+
+      it 'raises an error when trying to update status' do
+        expect {
+          project.update(status: :in_progress)
+        }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'when adding comments' do
+      it 'does not trigger status change validation' do
+        expect {
+          project.add_comment(user, 'Test comment')
+        }.not_to change(StatusChange, :count)
+      end
     end
   end
 
