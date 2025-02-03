@@ -1,4 +1,6 @@
 class Project < ApplicationRecord
+  include ProjectStateTracking
+
   has_many :comments, dependent: :destroy
   has_many :status_changes, dependent: :destroy
 
