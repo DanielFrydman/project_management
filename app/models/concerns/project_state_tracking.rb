@@ -6,7 +6,7 @@ module ProjectStateTracking
   end
 
   def add_comment(user, content)
-    comments.create!(user: user, content: content)
+    comments.create(user: user, content: content)
   end
 
   private

@@ -16,13 +16,18 @@ class ProjectsController < ApplicationController
   end
 
   def add_comment
-    if @project.add_comment(Current.user, comment_params[:content])
+    @comment = @project.add_comment(Current.user, comment_params[:content])
+    
+    if @comment.persisted?
       respond_to do |format|
         format.turbo_stream
         format.html { redirect_to @project }
       end
     else
-      render :show, status: :unprocessable_entity
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("project_comments", partial: "projects/comments", locals: { project: @project, comment: @comment }) }
+        format.html { render :show, status: :unprocessable_entity }
+      end
     end
   end
 
