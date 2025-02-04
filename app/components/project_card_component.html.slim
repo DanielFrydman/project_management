@@ -7,9 +7,10 @@
           = f.select :status,
                   status_options,
                   {},
-                  class: "bg-transparent border-none text-sm font-medium focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none active:outline-none cursor-pointer appearance-none px-3 py-1.5 select-none",
-                  style: "outline: none !important; box-shadow: none !important;",
+                  class: "bg-transparent border-none text-sm font-medium focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none active:outline-none cursor-pointer appearance-none px-3 py-1.5 select-none #{'border-red-500' if project.errors[:status].any?}",
                   onchange: "this.form.requestSubmit()"
+          - if project.errors[:status].any?
+            .absolute.mt-1.text-red-500.text-xs = project.errors[:status].join(", ").capitalize
     p.text-gray-600.text-justify = project.description
     = render "projects/comments", project: project
     = render ActivityFeedComponent.new(project: project)

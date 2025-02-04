@@ -1,17 +1,29 @@
 class ProjectsController < ApplicationController
+  include ActionView::RecordIdentifier
   before_action :set_project, only: [:show, :update, :add_comment]
 
   def show
   end
 
   def update
-    if @project.update(project_params)
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to @project }
+    if Project.statuses.key?(project_params[:status])
+      if @project.update(project_params)
+        respond_to do |format|
+          format.turbo_stream
+          format.html { redirect_to @project }
+        end
+      else
+        respond_to do |format|
+          format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@project), partial: "projects/project", locals: { project: @project }) }
+          format.html { render :show, status: :unprocessable_entity }
+        end
       end
     else
-      render :show, status: :unprocessable_entity
+      @project.errors.add(:status, "is not a valid status")
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@project), partial: "projects/project", locals: { project: @project }) }
+        format.html { render :show, status: :unprocessable_entity }
+      end
     end
   end
 
