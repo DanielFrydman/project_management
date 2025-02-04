@@ -24,6 +24,15 @@ services:
     depends_on:
       - db
 
+  css:
+    build: .
+    command: bash -c "bundle install && bin/rails tailwindcss:watch"
+    volumes:
+      - .:/app
+      - bundle:/usr/local/bundle
+    environment:
+      RAILS_ENV: development
+
 volumes:
   postgres_data:
   bundle: 
