@@ -14,12 +14,12 @@ class ActivityFeedComponent < ViewComponent::Base
     if activity.is_a?(Comment)
       activity.content
     else
-      tag.span(class: "text-gray-700") do
+      tag.span do
         safe_join([
-          "Changed status from  ",
-          tag.span(activity.old_status.humanize, class: status_color_classes(activity.old_status, 'p-2 rounded-lg')),
-          "  to  ",
-          tag.span(activity.new_status.humanize, class: status_color_classes(activity.new_status, 'p-2 rounded-lg'))
+          "Changed status from ",
+          tag.span(activity.old_status.humanize, class: status_color_classes(activity.old_status, 'rounded-lg'), style: 'padding: 0.20rem 0.25rem;'),
+          " to ",
+          tag.span(activity.new_status.humanize, class: status_color_classes(activity.new_status, 'rounded-lg'), style: 'padding: 0.20rem 0.25rem;')
         ])
       end
     end
