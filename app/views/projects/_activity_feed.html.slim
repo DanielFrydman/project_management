@@ -1,0 +1,16 @@
+.mt-4.space-y-4
+  - activities = (project.comments + project.status_changes).sort_by(&:created_at).reverse
+  - activities.each do |activity|
+    .bg-gray-50.rounded-lg.p-4
+      .flex.justify-between.items-start
+        .flex.items-center.gap-2
+          .text-sm.font-medium.text-gray-900 = activity.user.name
+          .text-sm.text-gray-500 = time_ago_in_words(activity.created_at) + " ago"
+      .mt-2.text-sm.text-gray-700
+        - if activity.is_a?(Comment)
+          = activity.content
+        - else
+          | Changed status from 
+          span.font-medium = activity.old_status.humanize
+          |  to 
+          span.font-medium = activity.new_status.humanize 
