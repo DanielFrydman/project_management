@@ -37,7 +37,7 @@ class ProjectsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.turbo_stream { render turbo_stream: turbo_stream.replace("project_comments", partial: "projects/comments", locals: { project: @project, comment: @comment }) }
+        format.turbo_stream
         format.html { render :show, status: :unprocessable_entity }
       end
     end

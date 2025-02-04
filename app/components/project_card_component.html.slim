@@ -3,15 +3,15 @@
     .flex.justify-between.items-center.mb-4
       h2.text-xl.font-semibold.text-gray-900 = project.title
       = form_with model: project, method: :patch, data: { turbo_stream: true } do |f|
-        .rounded-lg.overflow-hidden class=status_color_classes
+        .rounded-lg.overflow-hidden.flex.justify-center class=status_color_classes
           = f.select :status,
                   status_options,
                   {},
-                  class: "bg-transparent border-none text-sm font-medium focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none active:outline-none cursor-pointer appearance-none px-3 py-1.5 select-none #{'border-red-500' if project.errors[:status].any?}",
+                  class: "flex bg-transparent border-none text-sm font-medium focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none active:outline-none cursor-pointer appearance-none px-3 py-1.5 select-none #{'border-red-500' if project.errors[:status].any?}",
                   onchange: "this.form.requestSubmit()"
           - if project.errors[:status].any?
             .absolute.mt-1.text-red-500.text-xs = project.errors[:status].join(", ").capitalize
     p.text-gray-600.text-justify = project.description
-    = render "projects/comments", project: project
+    = render CommentsComponent.new(project: project)
     = render ActivityFeedComponent.new(project: project)
 

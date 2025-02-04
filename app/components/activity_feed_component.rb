@@ -1,4 +1,5 @@
 class ActivityFeedComponent < ViewComponent::Base
+  include Turbo::FramesHelper
   include StatusColorable
 
   def initialize(project:)

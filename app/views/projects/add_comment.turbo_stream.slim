@@ -1,5 +1,8 @@
-= turbo_stream.replace dom_id(@project) do
-  = render ProjectCardComponent.new(project: @project)
-
-= turbo_stream.replace "project_comments" do
-  = render "comments", project: @project 
+- if @comment&.persisted?
+  = turbo_stream.replace "project_comments" do
+    = render CommentsComponent.new(project: @project)
+  = turbo_stream.replace dom_id(@project) do
+    = render ProjectCardComponent.new(project: @project)
+- else
+  = turbo_stream.replace "project_comments" do
+    = render CommentsComponent.new(project: @project, comment: @comment) 
