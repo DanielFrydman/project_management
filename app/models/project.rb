@@ -11,7 +11,6 @@ class Project < ApplicationRecord
     completed: 3
   }, default: :not_started
 
-  validates :name, presence: true
   validates :title, presence: true
   validates :status, presence: true
 end
