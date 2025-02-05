@@ -3,7 +3,7 @@
     .flex.justify-between.items-center
       h2.text-xl.font-semibold.text-gray-900 = project.title
       = form_with model: project, method: :patch, data: { turbo_stream: true } do |f|
-        .rounded-lg.overflow-hidden class=status_color_classes
+        .rounded-lg.overflow-hidden.ml-4 class=status_color_classes
           = f.select :status,
                   status_options,
                   {},

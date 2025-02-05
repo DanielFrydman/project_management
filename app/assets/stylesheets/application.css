@@ -12,3 +12,11 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+.background-purple-homey {
+  background-color: #7c3aed;
+}
+
+.background-lime-homey {
+  background-color: #dbff00;
+}

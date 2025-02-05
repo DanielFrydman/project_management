@@ -19,7 +19,7 @@ html
       .min-h-screen style="background: linear-gradient(to bottom, rgba(102, 73, 210, 0.3), rgba(102, 73, 210, 0.3));"
         - unless content_for?(:skip_navbar)
           = render "shared/navbar"
-        
+
         - if flash.any?
           .container.mx-auto.px-4.sm:px-6.lg:px-8.mt-4
             - flash.each do |type, message|
