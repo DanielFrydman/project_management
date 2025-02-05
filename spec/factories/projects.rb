@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :project do
-    name { Faker::Company.name }
     title { Faker::Company.catch_phrase }
     description { Faker::Company.bs }
-    
+    association :user
+
     trait :not_started do
       status { :not_started }
     end
@@ -20,4 +20,4 @@ FactoryBot.define do
       status { :completed }
     end
   end
-end 
+end
