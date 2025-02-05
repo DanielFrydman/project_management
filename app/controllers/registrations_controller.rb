@@ -1,6 +1,6 @@
 class RegistrationsController < ApplicationController
   skip_before_action :authenticate_user!
-  layout 'auth'
+  layout "auth"
 
   def new
     @user = User.new
@@ -8,13 +8,10 @@ class RegistrationsController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    
-    if @user.save
-      session[:user_id] = @user.id
-      redirect_to projects_path, notice: "Welcome! Your account has been created."
-    else
-      render :new, status: :unprocessable_entity
-    end
+    return render :new, status: :unprocessable_entity unless @user.save
+
+    session[:user_id] = @user.id
+    redirect_to projects_path, notice: "Welcome! Your account has been created."
   end
 
   private
@@ -22,4 +19,4 @@ class RegistrationsController < ApplicationController
   def user_params
     params.require(:user).permit(:email, :password, :name)
   end
-end 
+end

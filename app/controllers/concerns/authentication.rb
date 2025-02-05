@@ -3,24 +3,23 @@ module Authentication
 
   included do
     before_action :authenticate_user!
-    before_action :set_current_user
     helper_method :current_user, :user_signed_in?
   end
 
   private
 
   def authenticate_user!
-    unless user_signed_in?
-      redirect_to login_path, alert: "Please sign in to continue."
-    end
+    return if user_signed_in?
+
+    redirect_to login_path, alert: "Please sign in to continue."
   end
 
   def current_user
-    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
-  end
+    return unless session[:user_id]
 
-  def set_current_user
-    Current.user = current_user
+    user ||= User.find_by(id: session[:user_id])
+    Current.user ||= user
+    @current_user ||= user
   end
 
   def user_signed_in?
@@ -38,4 +37,4 @@ module Authentication
   def redirect_back_or(default)
     redirect_to(stored_location || default)
   end
-end 
+end

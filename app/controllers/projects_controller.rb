@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   include ActionView::RecordIdentifier
-  before_action :set_project, only: [:show, :update, :add_comment]
+  before_action :set_project, only: [ :show, :update, :add_comment ]
 
   def index
     @projects = Project.all.order(created_at: :desc)
@@ -15,56 +15,49 @@ class ProjectsController < ApplicationController
 
   def create
     @project = current_user.projects.build(project_params)
+    return render :new, status: :unprocessable_entity unless @project.save
 
-    if @project.save
-      redirect_to @project, notice: 'Project was successfully created.'
-    else
-      render :new, status: :unprocessable_entity
-    end
+    redirect_to @project, notice: "Project was successfully created."
   end
 
   def update
-    if Project.statuses.key?(project_params[:status])
-      if @project.update(project_params)
-        respond_to do |format|
-          format.turbo_stream
-          format.html { redirect_to @project }
-        end
-      else
-        respond_to do |format|
-          format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@project), partial: "projects/project", locals: { project: @project }) }
-          format.html { render :show, status: :unprocessable_entity }
-        end
-      end
-    else
+    if project_params[:status] && !Project.statuses.key?(project_params[:status])
       @project.errors.add(:status, "is not a valid status")
-      respond_to do |format|
+      return respond_to do |format|
         format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@project), partial: "projects/project", locals: { project: @project }) }
         format.html { render :show, status: :unprocessable_entity }
       end
+    end
+
+    return respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to @project }
+    end if @project.update(project_params)
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@project), partial: "projects/project", locals: { project: @project }) }
+      format.html { render :show, status: :unprocessable_entity }
     end
   end
 
   def add_comment
     @comment = @project.add_comment(Current.user, comment_params[:content])
-    
-    if @comment.persisted?
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to @project }
-      end
-    else
-      respond_to do |format|
-        format.turbo_stream
-        format.html { render :show, status: :unprocessable_entity }
-      end
+
+    return respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to @project }
+    end if @comment.persisted?
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :show, status: :unprocessable_entity }
     end
   end
 
   private
 
   def set_project
-    @project = Project.find(params[:id])
+    @project = Project.includes(:user, :comments, :status_changes).find(params[:id])
   end
 
   def project_params
@@ -74,4 +67,4 @@ class ProjectsController < ApplicationController
   def comment_params
     params.require(:comment).permit(:content)
   end
-end 
+end
