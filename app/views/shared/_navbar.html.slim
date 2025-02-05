@@ -1,0 +1,11 @@
+nav.bg-white.shadow-sm
+  .mx-auto.max-w-7xl.px-4.sm:px-6.lg:px-8
+    .flex.h-16.justify-between.items-center
+      .flex.items-center
+        = link_to root_path, class: "flex items-center" do
+          span.text-xl.font-bold style="color: #7c3aed;" Project Conversations
+      
+      .flex.items-center.gap-4
+        - if current_user
+          span.text-sm.text-gray-500 = current_user.name
+          = button_to "Log out", logout_path, method: :delete, class: "inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500", style: "background-color: #dbff00;"
