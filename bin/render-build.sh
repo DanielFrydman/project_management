@@ -3,6 +3,8 @@
 set -o errexit
 
 mkdir -p bin
+mkdir -p public/assets
+mkdir -p tmp/cache
 
 gem install bundler --no-document
 bundle config set --local path 'vendor/bundle'
