@@ -93,22 +93,17 @@ docker compose restart web
 
 This application is configured for deployment on Render.com.
 <br>
+<br>
 You can test the application in the following URL: .
+<br>
 <br>
 The page may take a while to load as it is a free service and the system sleeps but once it loads, it is quick.
 <br>
+<br>
 The PostgreSQL DB in Render will be erased after 90 days.
 <br>
+<br>
 ***Please be aware that the link may be inactive, depending on when you access my repository, as the Render database associated with the free version could potentially have expired. Thank you for your understanding.***
-
-### Database Setup
-
-1. From the Render dashboard, click "New +" and select "PostgreSQL"
-2. Choose the free plan
-3. After creation, note the internal Database URL
-4. Add this URL as the `DATABASE_URL` environment variable in your web service settings
-
-The application will automatically run migrations during the build process (see bin/render-build.sh).
 
 ## 🧪 Future Improvements
 
