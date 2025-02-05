@@ -2,7 +2,25 @@ class ProjectsController < ApplicationController
   include ActionView::RecordIdentifier
   before_action :set_project, only: [:show, :update, :add_comment]
 
+  def index
+    @projects = Project.all.order(created_at: :desc)
+  end
+
   def show
+  end
+
+  def new
+    @project = current_user.projects.build
+  end
+
+  def create
+    @project = current_user.projects.build(project_params)
+
+    if @project.save
+      redirect_to @project, notice: 'Project was successfully created.'
+    else
+      render :new, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -46,7 +64,7 @@ class ProjectsController < ApplicationController
   private
 
   def set_project
-    @project = Project.last
+    @project = Project.find(params[:id])
   end
 
   def project_params

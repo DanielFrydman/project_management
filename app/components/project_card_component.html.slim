@@ -1,6 +1,6 @@
 = turbo_frame_tag dom_id(project) do
   .bg-white.rounded-lg.shadow-sm.p-6.w-full.max-w-lg.my-4
-    .flex.justify-between.items-center.mb-4
+    .flex.justify-between.items-center
       h2.text-xl.font-semibold.text-gray-900 = project.title
       = form_with model: project, method: :patch, data: { turbo_stream: true } do |f|
         .rounded-lg.overflow-hidden class=status_color_classes
@@ -11,7 +11,11 @@
                   onchange: "this.form.requestSubmit()"
           - if project.errors[:status].any?
             .absolute.mt-1.text-red-500.text-xs = project.errors[:status].join(", ").capitalize
-    p.text-gray-600.text-justify = project.description
+    p.text-gray-600.text-justify.mt-4 = project.description
+    .flex.items-center.mt-4
+      .text-sm.text-gray-500
+        | Created by 
+        span.font-medium.text-gray-900 = project.user.name
     = render CommentsComponent.new(project: project)
     = render ActivityFeedComponent.new(project: project)
 
