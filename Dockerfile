@@ -70,16 +70,16 @@ CMD ["./bin/thrust", "./bin/rails", "server"]
 
 FROM ruby:3.3.6-slim
 
-# Install essential packages including PostgreSQL client and Node.js
+# Install essential packages
 RUN apt-get update -qq && \
-    apt-get install -y build-essential libpq-dev nodejs npm git curl && \
+    apt-get install -y build-essential libpq-dev nodejs npm git curl netcat-traditional && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set working directory
 WORKDIR /app
 
-# Install latest Node.js and npm
+# Install Node.js 20.x
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g yarn
@@ -91,9 +91,6 @@ COPY Gemfile Gemfile.lock ./
 RUN gem install bundler && \
     bundle config set --local path 'vendor/bundle' && \
     bundle install
-
-# Copy the rest of the application code
-COPY . .
 
 # Create necessary directories
 RUN mkdir -p tmp/pids && \

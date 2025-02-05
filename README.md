@@ -60,20 +60,83 @@ git clone ...
 cd project_management
 ```
 
-2. Start the application with Docker:
+2. Start all services in the correct order:
 ```bash
-# Build and start all services
-docker compose up --build
+# Build the images first
+docker compose build
+
+# Start the database and run migrations
+docker compose up db setup -d
+
+# Start the asset compilation
+docker compose up assets
+
+# Start the Tailwind watcher and web server
+docker compose up tailwind web
 ```
 
-That's it! The application will be available at http://localhost:3000
+The application will be available at http://localhost:3000
 
-The setup process will:
-- Install all dependencies (Ruby gems, Node.js packages)
-- Set up the PostgreSQL database
-- Build Tailwind CSS assets
-- Start the Rails server
-- Start the Tailwind CSS watcher
+## 🔧 Common Tasks
+
+### Database operations
+```bash
+# Reset database (will recreate and reseed)
+docker compose run --rm setup bin/rails db:reset
+
+# Run new migrations
+docker compose run --rm setup bin/rails db:migrate
+
+# Run seeds only
+docker compose run --rm setup bin/rails db:seed
+
+# Access database console
+docker compose exec db psql -U postgres project_management_development
+```
+
+### First time setup
+```bash
+# Create and seed the database
+docker compose exec web bin/rails db:setup
+```
+
+### Rebuild after changes
+```bash
+# If you change the Dockerfile or add new dependencies:
+docker compose build
+
+# If you change JavaScript or CSS:
+docker compose restart assets tailwind
+
+# If you change Ruby code:
+docker compose restart web
+```
+
+### View logs
+```bash
+# All services
+docker compose logs -f
+
+# Specific service
+docker compose logs -f web
+docker compose logs -f assets
+docker compose logs -f tailwind
+docker compose logs -f db
+```
+
+### Rails console
+```bash
+docker compose exec web bin/rails console
+```
+
+### Clean up
+```bash
+# Stop all services
+docker compose down
+
+# Remove all data (including database)
+docker compose down -v
+```
 
 ## 🔧 Useful Docker Commands
 
