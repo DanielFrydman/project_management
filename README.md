@@ -168,20 +168,6 @@ docker compose down
 docker compose down -v
 ```
 
-## 🔧 Troubleshooting
-
-If you encounter asset-related issues:
-
-1. Clean and rebuild assets and restart the Rails server
-
-```bash
-docker compose exec web bin/rails assets:clean
-docker compose exec web bin/rails assets:clobber
-docker compose exec web bin/rails tailwindcss:build
-docker compose exec web bin/rails assets:precompile
-docker compose restart web
-```
-
 ## 🚀 Deployment
 
 This application is configured for deployment on Render.com.
