@@ -1,0 +1,27 @@
+doctype html
+html
+  head
+    title Project Conversations
+    meta name="viewport" content="width=device-width,initial-scale=1"
+    = csrf_meta_tags
+    = csp_meta_tag
+
+    = stylesheet_link_tag "tailwind", "data-turbo-track": "reload"
+    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = javascript_importmap_tags
+
+  body
+    .min-h-screen style="background-image: url('https://framerusercontent.com/images/gkIAjhpACyplYZsHCai8gf7ZE.jpg'); background-size: cover; background-position: center; background-attachment: fixed;"
+      .min-h-screen style="background: linear-gradient(to bottom, rgba(102, 73, 210, 0.3), rgba(102, 73, 210, 0.3));"
+        - unless content_for?(:skip_navbar)
+          = render "shared/navbar"
+        
+        - if flash.any?
+          .container.mx-auto.px-4.sm:px-6.lg:px-8.mt-4
+            - flash.each do |type, message|
+              div class="rounded-md #{type == 'notice' ? 'bg-green-50' : 'bg-red-50'} p-4 mb-4"
+                div class="text-sm #{type == 'notice' ? 'text-green-700' : 'text-red-700'}"
+                  = message
+
+        main
+          = yield 
