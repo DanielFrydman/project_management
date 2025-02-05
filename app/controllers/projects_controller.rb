@@ -21,36 +21,43 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    if project_params[:status] && !Project.statuses.key?(project_params[:status])
-      @project.errors.add(:status, "is not a valid status")
-      return respond_to do |format|
-        format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@project), partial: "projects/project", locals: { project: @project }) }
-        format.html { render :show, status: :unprocessable_entity }
-      end
-    end
-
-    return respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to @project }
-    end if @project.update(project_params)
-
     respond_to do |format|
-      format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@project), partial: "projects/project", locals: { project: @project }) }
-      format.html { render :show, status: :unprocessable_entity }
+      if @project.update(project_params)
+        format.html { redirect_to @project, notice: "Project was successfully updated." }
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.replace(dom_id(@project),
+            partial: "projects/project",
+            locals: { project: @project }
+          )
+        }
+      else
+        format.html { render :show, status: :unprocessable_entity }
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.replace(dom_id(@project),
+            partial: "projects/project",
+            locals: { project: @project }
+          )
+        }
+      end
     end
   end
 
   def add_comment
     @comment = @project.add_comment(Current.user, comment_params[:content])
 
-    return respond_to do |format|
-      format.turbo_stream
-      format.html { redirect_to @project }
-    end if @comment.persisted?
-
     respond_to do |format|
-      format.turbo_stream
-      format.html { render :show, status: :unprocessable_entity }
+      if @comment.persisted?
+        format.html { redirect_to @project, notice: "Comment was successfully added." }
+        format.turbo_stream
+      else
+        format.html { render :show, status: :unprocessable_entity }
+        format.turbo_stream {
+          render turbo_stream: turbo_stream.replace("new_comment",
+            partial: "comments/form",
+            locals: { project: @project, comment: @comment }
+          )
+        }
+      end
     end
   end
 
@@ -58,6 +65,8 @@ class ProjectsController < ApplicationController
 
   def set_project
     @project = Project.includes(:user, :comments, :status_changes).find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to projects_path, alert: "Project not found."
   end
 
   def project_params

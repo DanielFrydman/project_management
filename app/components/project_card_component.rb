@@ -9,11 +9,11 @@ class ProjectCardComponent < ViewComponent::Base
 
   def status_options
     Project.statuses.map do |status, _value|
-      [status.titleize, status]
+      [ status.titleize, status ]
     end
   end
 
   private
 
   attr_reader :project
-end 
+end

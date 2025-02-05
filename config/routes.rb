@@ -19,12 +19,12 @@ Rails.application.routes.draw do
   end
 
   # Authentication
-  get 'login', to: 'sessions#new'
-  post 'login', to: 'sessions#create'
-  delete 'logout', to: 'sessions#destroy'
-  
-  get 'signup', to: 'registrations#new'
-  post 'signup', to: 'registrations#create'
+  get "login", to: "sessions#new"
+  post "login", to: "sessions#create"
+  delete "logout", to: "sessions#destroy"
+
+  get "signup", to: "registrations#new"
+  post "signup", to: "registrations#create"
 
   root "projects#index"
 end
