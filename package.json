@@ -1,5 +1,5 @@
 {
-  "name": "project_conversations",
+  "name": "project_management",
   "private": true,
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
