@@ -28,7 +28,6 @@ Build a project conversation history where users could:
 * `view_component`: Added for reusable view components
 * `propshaft`: Added for asset pipeline
 * `tailwindcss-rails`: Added for styling
-* `stimulus-rails`: Added for JavaScript sprinkles
 * `turbo-rails`: Added for real-time features
 
 ## 🎢 Features
@@ -61,31 +60,62 @@ git clone ...
 cd project_management
 ```
 
-2. Build and start the containers with all necessary setup:
+2. Start the application with Docker:
 ```bash
-# Stop any running containers and clean up
+# Build and start all services
+docker compose up --build
+```
+
+That's it! The application will be available at http://localhost:3000
+
+The setup process will:
+- Install all dependencies (Ruby gems, Node.js packages)
+- Set up the PostgreSQL database
+- Build Tailwind CSS assets
+- Start the Rails server
+- Start the Tailwind CSS watcher
+
+## 🔧 Useful Docker Commands
+
+```bash
+# View logs of all services
+docker compose logs -f
+
+# View logs of a specific service
+docker compose logs -f web
+docker compose logs -f css
+docker compose logs -f db
+
+# Rebuild assets
+docker compose exec web bin/rails assets:precompile
+
+# Reset database
+docker compose exec web bin/rails db:reset
+
+# Run Rails console
+docker compose exec web bin/rails console
+
+# Restart all services
+docker compose restart
+
+# Stop all services
 docker compose down
 
-# Update compile assets
-docker compose exec web rake assets:precompile
-docker compose exec web bin/rails assets:clobber
-
-# Rebuild and start containers
-docker compose build
-docker compose up -d
+# Stop all services and remove volumes (will delete database data)
+docker compose down -v
 ```
 
-3. Create and setup the database:
-```bash
-docker compose exec web bin/rails db:create db:migrate db:seed
-```
+## 🔧 Troubleshooting
 
-4. Visit http://localhost:3000 in your browser
+If you encounter asset-related issues:
 
-Note: If you make changes to JavaScript files or have issues with assets, you might need to rerun the asset compilation steps:
+1. Clean and rebuild assets and restart the Rails server
+
 ```bash
-docker compose exec web rake assets:precompile
+docker compose exec web bin/rails assets:clean
 docker compose exec web bin/rails assets:clobber
+docker compose exec web bin/rails tailwindcss:build
+docker compose exec web bin/rails assets:precompile
 docker compose restart web
 ```
 
