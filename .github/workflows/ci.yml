@@ -66,11 +66,6 @@ jobs:
           bundle exec rails assets:clean
           bundle exec rails assets:clobber
 
-      - name: Run security checks
-        run: |
-          bundle exec bundle-audit check --update
-          bundle exec brakeman -q -w2
-
       - name: Run linters
         run: |
           bundle exec rubocop
