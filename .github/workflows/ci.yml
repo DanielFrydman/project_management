@@ -54,7 +54,8 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-        run: bundle exec rails test
+        run: |
+          bundle exec rspec
 
       - name: Check asset compilation
         env:
