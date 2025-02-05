@@ -53,7 +53,7 @@ Build a project conversation history where users could:
   - Chronological display of all project activities
   - Includes both comments and status changes
 
-## 🐳 Run the project
+## 🐳 Run the project locally
 
 1. Clone the repository:
 ```bash
@@ -88,6 +88,42 @@ docker compose exec web rake assets:precompile
 docker compose exec web bin/rails assets:clobber
 docker compose restart web
 ```
+
+## 🚀 Deployment
+
+This application is configured for deployment on Render.com.
+
+### Prerequisites
+
+1. Create a free account on [Render](https://render.com)
+2. Fork or clone this repository to your GitHub account
+
+### Deploy Steps
+
+1. From the Render dashboard, click "New +" and select "Web Service"
+2. Connect your GitHub repository
+3. Fill in the following configuration:
+   - **Name**: Choose a name for your service
+   - **Environment**: Ruby
+   - **Build Command**: `./bin/render-build.sh`
+   - **Start Command**: `bundle exec rails server`
+   - **Ruby Version**: 3.3.6
+
+4. Add the following environment variables:
+   - `RAILS_MASTER_KEY`: Your Rails master key from config/master.key
+   - `DATABASE_URL`: Will be automatically added if you create a Render PostgreSQL database
+   - `RAILS_ENV`: production
+
+5. Click "Create Web Service"
+
+### Database Setup
+
+1. From the Render dashboard, click "New +" and select "PostgreSQL"
+2. Choose the free plan
+3. After creation, note the internal Database URL
+4. Add this URL as the `DATABASE_URL` environment variable in your web service settings
+
+The application will automatically run migrations during the build process (see bin/render-build.sh).
 
 ## 🧪 Future Improvements
 
