@@ -92,29 +92,14 @@ docker compose restart web
 ## 🚀 Deployment
 
 This application is configured for deployment on Render.com.
-
-### Prerequisites
-
-1. Create a free account on [Render](https://render.com)
-2. Fork or clone this repository to your GitHub account
-
-### Deploy Steps
-
-1. From the Render dashboard, click "New +" and select "Web Service"
-2. Connect your GitHub repository
-3. Fill in the following configuration:
-   - **Name**: Choose a name for your service
-   - **Environment**: Ruby
-   - **Build Command**: `./bin/render-build.sh`
-   - **Start Command**: `bundle exec rails server`
-   - **Ruby Version**: 3.3.6
-
-4. Add the following environment variables:
-   - `RAILS_MASTER_KEY`: Your Rails master key from config/master.key
-   - `DATABASE_URL`: Will be automatically added if you create a Render PostgreSQL database
-   - `RAILS_ENV`: production
-
-5. Click "Create Web Service"
+<br>
+You can test the application in the following URL: .
+<br>
+The page may take a while to load as it is a free service and the system sleeps but once it loads, it is quick.
+<br>
+The PostgreSQL DB in Render will be erased after 90 days.
+<br>
+***Please be aware that the link may be inactive, depending on when you access my repository, as the Render database associated with the free version could potentially have expired. Thank you for your understanding.***
 
 ### Database Setup
 
