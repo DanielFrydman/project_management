@@ -70,23 +70,34 @@ CMD ["./bin/thrust", "./bin/rails", "server"]
 
 FROM ruby:3.3.6-slim
 
-# Install essential packages including PostgreSQL client
+# Install essential packages
 RUN apt-get update -qq && \
-    apt-get install -y build-essential libpq-dev nodejs npm git && \
+    apt-get install -y build-essential libpq-dev nodejs npm git curl netcat-traditional && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set working directory
 WORKDIR /app
 
-# Install application gems
+# Install Node.js 20.x
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g yarn
+
+# Copy dependency files
 COPY Gemfile Gemfile.lock ./
-RUN bundle install
 
-# Copy application code
-COPY . .
+# Install Ruby gems
+RUN gem install bundler && \
+    bundle config set --local path 'vendor/bundle' && \
+    bundle install
 
-# Add a script to be executed every time the container starts
+# Create necessary directories
+RUN mkdir -p tmp/pids && \
+    mkdir -p public/assets && \
+    mkdir -p tmp/cache
+
+# Add entrypoint script
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]

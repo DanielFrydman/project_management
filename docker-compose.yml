@@ -1,3 +1,5 @@
+version: '3'
+
 services:
   db:
     image: postgres:16
@@ -9,30 +11,70 @@ services:
       POSTGRES_DB: project_management_development
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  web:
+  setup:
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle install && bin/rails server -p 3000 -b '0.0.0.0'"
+    command: bash -c "bundle install && bin/rails db:create db:migrate db:seed"
     volumes:
       - .:/app
       - bundle:/usr/local/bundle
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:postgres@db:5432/project_management_development
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build: .
+    command: bash -c "bundle install && bin/rails server -p 3000 -b '0.0.0.0'"
+    volumes:
+      - .:/app
+      - bundle:/usr/local/bundle
+      - node_modules:/app/node_modules
+      - assets:/app/public/assets
     ports:
       - "3000:3000"
     environment:
-      POSTGRES_HOST: db
+      RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:postgres@db:5432/project_management_development
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  assets:
+    build: .
+    command: bash -c "bundle install && bin/rails tailwindcss:build && bin/rails assets:precompile"
+    volumes:
+      - .:/app
+      - bundle:/usr/local/bundle
+      - node_modules:/app/node_modules
+      - assets:/app/public/assets
+    environment:
       RAILS_ENV: development
     depends_on:
-      - db
+      - web
 
-  css:
+  tailwind:
     build: .
     command: bash -c "bundle install && bin/rails tailwindcss:watch"
     volumes:
       - .:/app
       - bundle:/usr/local/bundle
+      - node_modules:/app/node_modules
+      - assets:/app/public/assets
     environment:
       RAILS_ENV: development
+    depends_on:
+      - assets
 
 volumes:
   postgres_data:
-  bundle: 
+  bundle:
+  node_modules:
+  assets:

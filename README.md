@@ -28,7 +28,6 @@ Build a project conversation history where users could:
 * `view_component`: Added for reusable view components
 * `propshaft`: Added for asset pipeline
 * `tailwindcss-rails`: Added for styling
-* `stimulus-rails`: Added for JavaScript sprinkles
 * `turbo-rails`: Added for real-time features
 
 ## 🎢 Features
@@ -61,32 +60,112 @@ git clone ...
 cd project_management
 ```
 
-2. Build and start the containers with all necessary setup:
+2. Start all services in the correct order:
 ```bash
-# Stop any running containers and clean up
+# Build the images first
+docker compose build
+
+# Start the database and run migrations
+docker compose up db setup -d
+
+# Start the asset compilation
+docker compose up assets
+
+# Start the Tailwind watcher and web server
+docker compose up tailwind web
+```
+
+The application will be available at http://localhost:3000
+
+## 🔧 Common Tasks
+
+### Database operations
+```bash
+# Reset database (will recreate and reseed)
+docker compose run --rm setup bin/rails db:reset
+
+# Run new migrations
+docker compose run --rm setup bin/rails db:migrate
+
+# Run seeds only
+docker compose run --rm setup bin/rails db:seed
+
+# Access database console
+docker compose exec db psql -U postgres project_management_development
+```
+
+### First time setup
+```bash
+# Create and seed the database
+docker compose exec web bin/rails db:setup
+```
+
+### Rebuild after changes
+```bash
+# If you change the Dockerfile or add new dependencies:
+docker compose build
+
+# If you change JavaScript or CSS:
+docker compose restart assets tailwind
+
+# If you change Ruby code:
+docker compose restart web
+```
+
+### View logs
+```bash
+# All services
+docker compose logs -f
+
+# Specific service
+docker compose logs -f web
+docker compose logs -f assets
+docker compose logs -f tailwind
+docker compose logs -f db
+```
+
+### Rails console
+```bash
+docker compose exec web bin/rails console
+```
+
+### Clean up
+```bash
+# Stop all services
 docker compose down
 
-# Update compile assets
-docker compose exec web rake assets:precompile
-docker compose exec web bin/rails assets:clobber
-
-# Rebuild and start containers
-docker compose build
-docker compose up -d
+# Remove all data (including database)
+docker compose down -v
 ```
 
-3. Create and setup the database:
-```bash
-docker compose exec web bin/rails db:create db:migrate db:seed
-```
+## 🔧 Useful Docker Commands
 
-4. Visit http://localhost:3000 in your browser
-
-Note: If you make changes to JavaScript files or have issues with assets, you might need to rerun the asset compilation steps:
 ```bash
-docker compose exec web rake assets:precompile
-docker compose exec web bin/rails assets:clobber
-docker compose restart web
+# View logs of all services
+docker compose logs -f
+
+# View logs of a specific service
+docker compose logs -f web
+docker compose logs -f css
+docker compose logs -f db
+
+# Rebuild assets
+docker compose exec web bin/rails assets:precompile
+
+# Reset database
+docker compose exec web bin/rails db:reset
+
+# Run Rails console
+docker compose exec web bin/rails console
+
+# Restart all services
+docker compose restart
+
+# Stop all services
+docker compose down
+
+# Stop all services and remove volumes (will delete database data)
+docker compose down -v
 ```
 
 ## 🚀 Deployment
