@@ -12,6 +12,25 @@ Build a project conversation history where users could:
 - Sign up and sign in
 - Create, read and update (CRU) a Project
 
+## 🎊 Results
+### 📸 Screenshots
+Log In             |  Sign Up
+:-------------------------:|:-------------------------:
+![Screenshot 2025-03-21 at 8 14 24 AM](https://github.com/user-attachments/assets/e39cb405-e706-4774-ae5a-94d497bdc1b2)  |  ![Screenshot 2025-03-21 at 8 14 30 AM](https://github.com/user-attachments/assets/52fd505d-ed92-4bbd-acfa-eb174e241883)
+
+Dashboard             |  Dashboard
+:-------------------------:|:-------------------------:
+![Screenshot 2025-03-21 at 8 15 04 AM](https://github.com/user-attachments/assets/c258c695-f46d-426d-a833-0685ad326779)  |  ![Screenshot 2025-03-21 at 8 19 00 AM](https://github.com/user-attachments/assets/947604b6-2c93-47d3-9b2e-284929b19b49)
+
+Project Management             |  Project Management
+:-------------------------:|:-------------------------:
+![Screenshot 2025-03-21 at 8 19 18 AM](https://github.com/user-attachments/assets/62b31250-f6d2-46a6-ba97-74dc5b1c9bee)  |  ![Screenshot 2025-03-21 at 8 29 42 AM](https://github.com/user-attachments/assets/99fd6e84-5e63-4261-af48-bb432946b42c)
+
+### 📹 Screen Recording
+https://github.com/user-attachments/assets/c09dff13-1fbd-4352-9eab-83d79d4c34f0
+
+https://github.com/user-attachments/assets/eb7c927e-7b10-45cd-92bb-c6c39dfa5748
+
 ## 🤔 Questions (and Answers) I Would Have Asked and Waited For
 
 ### Project Basics
